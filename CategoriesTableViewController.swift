@@ -142,4 +142,23 @@ class CategoriesTableViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let alertTextOfCategory = String(caregories[indexPath.row].title ?? "")
+            let alert = UIAlertController(title: "", message: "Delete \(alertTextOfCategory) ?" , preferredStyle: .alert)
+            let no = UIAlertAction(title: "No", style: .cancel)
+            let yes = UIAlertAction(title: "Yes", style: .destructive) { [self] action in
+                let category = self.caregories[indexPath.row]
+                self.context.delete(category)
+                caregories.remove(at: indexPath.row)
+                if soundOn { playSound(sound: "Recycle") }
+                saveCategories()
+            }
+            alert.addAction(yes)
+            alert.addAction(no)
+            present(alert, animated: true)
+        }
+    }
+
+    
 }

@@ -73,6 +73,7 @@ class NotesTableViewController: UITableViewController {
         alert.addAction(action)
         present(alert, animated: true)
     }
+
     
     @objc func longPress(longPressGestureRecognizer: UILongPressGestureRecognizer) {
         if longPressGestureRecognizer.state == UIGestureRecognizer.State.began {
@@ -166,6 +167,25 @@ class NotesTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let alertTextOfNote = String(notes?[indexPath.row].text ?? "")
+            let alert = UIAlertController(title: "", message: "Delete \(alertTextOfNote) ?" , preferredStyle: .alert)
+            let no = UIAlertAction(title: "No", style: .cancel)
+            let yes = UIAlertAction(title: "Yes", style: .destructive) { [self] action in
+                let note = self.notes?[indexPath.row]
+                self.context.delete(note!)
+                notes?.remove(at: indexPath.row)
+                if soundOn { playSound(sound: "Recycle") }
+                saveNotes()
+            }
+            alert.addAction(yes)
+            alert.addAction(no)
+            present(alert, animated: true)
+        }
+    }
+
     
 }
 

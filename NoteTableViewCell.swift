@@ -56,7 +56,7 @@ class NoteTableViewCell: UITableViewCell {
         noteTextLabel.adjustsFontSizeToFitWidth = true
         noteTextLabel.adjustsFontForContentSizeCategory = true
         noteTextLabel.numberOfLines = 0
-        noteTextLabel.minimumScaleFactor = 0.5
+        noteTextLabel.minimumScaleFactor = 0.7
         noteTextLabel.sizeToFit()
         noteTextLabel.layoutIfNeeded()
     }
