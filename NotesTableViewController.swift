@@ -50,29 +50,45 @@ class NotesTableViewController: UITableViewController {
     }
     
     
-    @objc func addNote(){
-        var textField = UITextField()
-        let alert = UIAlertController(title: "", message: "Add new Note", preferredStyle: .alert)
-        let action = UIAlertAction(title: "Add", style: .default) { action in
-            if (textField.text?.count != 0) {
-                if soundOn { playSound(sound: "Popup") }
+    @objc func addNote() {
+        let alertController = UIAlertController(title: "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", message: nil, preferredStyle: .alert)
+        let textView = UITextView(frame: CGRect.zero)
+        alertController.view.addSubview(textView)
+
+        let addAction = UIAlertAction(title: "Add", style: .default) { [weak self] _ in
+            guard let self = self else { return }
+            if !textView.text.isEmpty {
                 let newNote = Note(context: self.context)
-                newNote.category = self.selectedCategory // .category comes from CoreData relation !
-                newNote.text = textField.text
+                newNote.category = self.selectedCategory
+                newNote.text = textView.text
                 newNote.isDone = false
                 newNote.dateCreated = Date()
                 self.notes?.append(newNote)
                 self.saveNotes()
             }
         }
-        alert.addTextField { alertTextField in
-            alertTextField.keyboardType = .asciiCapable
-            alertTextField.placeholder = "Note name, like \"buy milk tomorrow\""
-            textField = alertTextField //to use textField above
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
+            alertController.dismiss(animated: true, completion: nil)
         }
-        alert.addAction(action)
-        present(alert, animated: true)
+
+        alertController.addAction(addAction)
+        alertController.addAction(cancelAction)
+
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        let leadConstraint = NSLayoutConstraint(item: alertController.view!, attribute: .leading, relatedBy: .equal, toItem: textView, attribute: .leading, multiplier: 1.0, constant: -8.0)
+        let trailConstraint = NSLayoutConstraint(item: alertController.view!, attribute: .trailing, relatedBy: .equal, toItem: textView, attribute: .trailing, multiplier: 1.0, constant: 8.0)
+
+        let topConstraint = NSLayoutConstraint(item: alertController.view!, attribute: .top, relatedBy: .equal, toItem: textView, attribute: .top, multiplier: 1.0, constant: -64.0)
+        let bottomConstraint = NSLayoutConstraint(item: alertController.view!, attribute: .bottom, relatedBy: .equal, toItem: textView, attribute: .bottom, multiplier: 1.0, constant: 64.0)
+        alertController.view.addConstraint(leadConstraint)
+        alertController.view.addConstraint(trailConstraint)
+        alertController.view.addConstraint(topConstraint)
+        alertController.view.addConstraint(bottomConstraint)
+
+        self.present(alertController, animated: true, completion: nil)
     }
+
+
 
     
     @objc func longPress(longPressGestureRecognizer: UILongPressGestureRecognizer) {
